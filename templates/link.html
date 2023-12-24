@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Log In
+{% endblock %}
+
+{% block main %}
+    <form action="/link" method="post">
+        <div class="mb-3" style="color:white;font-family: 'Bebas Neue', sans-serif; font-size: x-large;"> Put the link of the You Tube channel to analize</div>
+        <div class="mb-3">
+            <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="link" name="link" placeholder="link" type="text" required>
+        </div>
+        
+        <button class="btn btn-primary" type="submit">Analize</button>
+    </form>
+{% endblock %}
+{% block script %}
+
+    
+
+{% endblock %}

@@ -1,0 +1,28 @@
+/* FILEPATH: /Users/pietrocaracristi/Desktop/WEB_DEVELOPMENT/PROGETTO/static/style.css */
+.grid_container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    
+}
+
+.grid_item {
+    
+    background: rgba( 255, 255, 255, 0.2 );
+    box-shadow: 0 8px 32px 0 rgba(130, 127, 127, 0.37);
+    backdrop-filter: blur( 6px );
+    -webkit-backdrop-filter: blur( 6px );
+    border-radius: 10px;
+    
+    margin: 15px;
+    padding: 40px;
+   
+    
+}
+
+@media screen and (max-width: 700px) {
+    .grid_container {
+        grid-template-columns: 1fr;
+        grid-template-rows: 1fr 1fr 1fr 1fr;
+    }
+}

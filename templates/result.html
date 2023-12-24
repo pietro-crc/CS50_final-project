@@ -1,0 +1,263 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Log In
+{% endblock %}
+
+{% block main %}
+    <h1 style="color:white;font-family: 'Bebas Neue', sans-serif; font-size: 50px;">RESULT GRAPH</h1>
+    <div class="grid_container">
+        <div id="first" class="grid_item"> 
+            <p style="margin-bottom: 30px;"><span style = "font-family: 'Roboto Mono', monospace; color: antiquewhite;">Emotions treemap: </span>This chart shows the distribution of the different emotions (anger, surprise, sadness, love, joy, fear) in the data. Each emotion is represented by a rectangle in the treemap, whose size is proportional to the value of the emotion.</p></div>
+        <div id="second" class="chart grid_item">
+            <p style="margin-bottom: 30px;"><span style = "font-family: 'Roboto Mono', monospace; color: antiquewhite;">Sentiment pie chart: </span> This pie chart shows the distribution of negative, positive, and neutral sentiments in the data. Each slice of the pie represents a sentiment, and its size is proportional to the percentage of that sentiment in the data.</p></div>
+        <div id="third" class="grid_item">
+            <p  style="margin-bottom: 30px;"><span style = "font-family: 'Roboto Mono', monospace; color: antiquewhite;">Positive and negative sentiment area chart: </span>This chart shows the trend of positive and negative sentiments over time. The x-axis represents time (in datetime format), while the y-axis represents the number of positive or negative sentiments.</p></div>
+        <div id="fourth" class="grid_item">
+            <p  style="margin-bottom: 30px;"><span style = "font-family: 'Roboto Mono', monospace; color: antiquewhite;">Emotion trend line chart: </span> This chart shows the trend ofthe emotion trend over time. The x-axis represents time (in datetime format), while the y-axis represents the emotion index. The chart also includes a forecast of future.</p></div>
+      </div>
+      
+    
+{% endblock %}
+{% block script %}
+
+
+<script >// Add the missing import statement for ApexCharts>
+
+
+
+
+
+                        
+const request = fetch('/result_data');
+                request.then(response => response.json()).then(data => {
+
+                        const negative = data.negative;
+                        const positive = data.positive;
+                        const neutral = data.neutral;
+                        const total = data.total;
+                        const anger = data.anger;
+                        const fear = data.fear;
+                        const joy = data.joy;
+                        const love = data.love;
+                        const sadness = data.sadness;
+                        const surprise = data.surprise;
+                        const total_emotion = data.total_emotion;
+                        const data_video_sentiment_total = data.data_video_sentiment_total;
+                        const data_video_sentiment_positive = data.data_video_sentiment_positive;
+                        const data_video_sentiment_negative = data.data_video_sentiment_negative;
+                        const data_video_sentiment_neutral = data.data_video_sentiment_neutral;
+                        const sum_data_sentiment = data.sum_data_sentiment;
+                        const datetime_video = data.datetime_video;
+
+                        
+                    
+                        var options = {
+                    series: [
+                    {
+                        data: [
+                            {
+                                x: 'anger',
+                                y: anger
+                            },
+                            {
+                                x: 'surprise',
+                                y: surprise
+                            },
+                            {
+                                x: 'sadness',
+                                y: sadness
+                            },
+                            {
+                                x: 'love',
+                                y: love
+                            },
+                            {
+                                x: 'joy',
+                                y: joy
+                            },
+                            {
+                                x: 'fear',
+                                y: fear
+                            },
+                            
+                        ]
+                    }
+                ],
+                    legend: {
+                    show: false
+                },
+                chart: {
+                    height: 270,
+                    type: 'treemap'
+                },
+                title: {
+                    text: 'Emotion tree map'
+                }
+                };
+
+                var chart = new ApexCharts(document.querySelector("#first"), options);
+                chart.render();
+
+
+                
+            var options = {
+                series: [negative, positive, neutral],
+                chart: {
+                
+                height: 270,
+                type: 'pie',
+                },
+                labels: ['negative', 'positive', 'neutral'],
+                theme: {
+                monochrome: {
+                    enabled: true
+                }
+                },
+                plotOptions: {
+                pie: {
+                    dataLabels: {
+                    offset: -5
+                    }
+                }
+                },
+                title: {
+                text: "Monochrome Pie"
+                },
+                dataLabels: {
+                formatter(val, opts) {
+                    const name = opts.w.globals.labels[opts.seriesIndex]
+                    return [name, val.toFixed(1) + '%']
+                }
+                },
+                legend: {
+                show: false
+                }
+                };
+
+                var chart = new ApexCharts(document.querySelector("#second"), options);
+                chart.render();
+
+
+
+
+
+
+            //comparing positive to negative
+            var options = {
+                series: [{
+                name: 'negative',
+                data: data_video_sentiment_negative
+                }, {
+                name: 'positive',
+                data: data_video_sentiment_positive
+                }],
+                chart: {
+                height: 300,
+                
+                type: 'area'
+                },
+                dataLabels: {
+                enabled: false
+                },
+                stroke: {
+                curve: 'smooth'
+                },
+                xaxis: {
+                type: 'datetime',
+                categories: datetime_video
+                },
+                
+                tooltip: {
+                x: {
+                    format: 'dd/MM/yy HH:mm'
+                },
+                },
+                };
+
+                var chart = new ApexCharts(document.querySelector("#third"), options);
+                chart.render();
+
+
+
+
+
+                //temporal forecasting
+                var options = {
+                series: [{
+                name: 'Sales',
+                data: sum_data_sentiment
+                }],
+                chart: {
+                height: 300,
+                
+                type: 'line',
+                },
+                forecastDataPoints: {
+                count: 0
+                },
+                stroke: {
+                width: 5,
+                curve: 'smooth'
+                },
+                xaxis: {
+                type: 'datetime',
+                categories: datetime_video
+                ,
+                tickAmount: 10,
+                labels: {
+                    formatter: function(value, timestamp, opts) {
+                    return opts.dateFormatter(new Date(timestamp), 'dd MMM')
+                    }
+                }
+                },
+                title: {
+                text: 'Forecast',
+                align: 'left',
+                style: {
+                    fontSize: "16px",
+                    color: '#665'
+                }
+                },
+                fill: {
+                type: 'gradient',
+                gradient: {
+                    shade: 'dark',
+                    gradientToColors: [ '#FDD835'],
+                    shadeIntensity: 1,
+                    type: 'horizontal',
+                    opacityFrom: 1,
+                    opacityTo: 1,
+                    stops: [0, 100, 100, 100]
+                },
+                },
+                yaxis: {
+                min: -10,
+                max: 40
+                }
+                };
+
+                var chart = new ApexCharts(document.querySelector("#fourth"), options);
+                chart.render();
+            
+                    
+                    
+    
+            
+
+                     });
+                        
+                        
+                      
+
+
+
+                        
+                        
+                
+
+
+</script>
+    
+
+{% endblock %}
